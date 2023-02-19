@@ -1,7 +1,10 @@
 package com.integrationabdi.springintegrationtesting.service;
 
 
+import com.integrationabdi.springintegrationtesting.dto.StudentRequest;
+import com.integrationabdi.springintegrationtesting.dto.StudentResponse;
 import com.integrationabdi.springintegrationtesting.exception.StudentNotFoundException;
+import com.integrationabdi.springintegrationtesting.mapper.StudentResponseMapper;
 import com.integrationabdi.springintegrationtesting.model.Student;
 import com.integrationabdi.springintegrationtesting.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +19,36 @@ import java.util.Optional;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private StudentRepository studentRepository;
+    private StudentRepository studentRepository ;
 
     @Autowired
     public StudentServiceImpl(StudentRepository studentRepository) {
+
         this.studentRepository = studentRepository;
     }
 
     @Override
-    public ResponseEntity<Student> createStudent(Student student){
+    public ResponseEntity<Student> createStudent(StudentRequest studentResponse){
+        Student student = new Student(
+                studentResponse.getFirstName(),
+                studentResponse.getLastName(),
+                studentResponse.getEmail(),
+                studentResponse.getRegNo(),
+                studentResponse.getStartDate(),
+                studentResponse.getEndDate()
+        );
         return new ResponseEntity<>(studentRepository.save(student), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<List<Student>>getAllStudent(){
-        return  new ResponseEntity<>(studentRepository.findAll(), HttpStatus.FOUND);
+    public List<StudentResponse> getAllStudent(){
+        List<Student>students = studentRepository.findAll();
+       return students.stream().map(student ->
+               StudentResponseMapper.
+                       MapToStudent(student)).toList();
     }
+
+
 
     @Override
     @Cacheable

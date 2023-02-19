@@ -1,5 +1,7 @@
 package com.integrationabdi.springintegrationtesting.controller;
 
+import com.integrationabdi.springintegrationtesting.dto.StudentRequest;
+import com.integrationabdi.springintegrationtesting.dto.StudentResponse;
 import com.integrationabdi.springintegrationtesting.model.Student;
 import com.integrationabdi.springintegrationtesting.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,12 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Student>Create(@RequestBody Student student){
-        return studentService.createStudent(student);
+    public ResponseEntity<Student>Create(@RequestBody StudentRequest studentResponse){
+        return studentService.createStudent(studentResponse);
     }
 
     @GetMapping()
-    public ResponseEntity<List<Student>>findAll(){
+    public List<StudentResponse>findAll(){
         return  studentService.getAllStudent();
     }
 
@@ -34,4 +36,6 @@ public class StudentController {
             @PathVariable Long id){
         return studentService.findStudentById(id);
     }
+
+
 }
